@@ -11,6 +11,8 @@ We also leveraged Lime and Shap to explain the models with visualization.
 
 ## Update 
 
+Jun 3th 2019
+
 - [x] Form Validation: no more than  2 words
 - [x] Lime highlight for task 1
 - [x] Shap Force bar for task 2
