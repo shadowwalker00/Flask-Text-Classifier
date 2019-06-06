@@ -1,0 +1,26 @@
+Task 2 Sample
+
+Yes Cancer samples:
+
+study interventions are Erlotinib Hydrochloride . precancerous condition diagnosis and disease characteristics
+
+study interventions are Docetaxel . recurrent non small cell lung carcinoma diagnosis and arm cohort four
+
+study interventions are Cisplatin . esophageal cancer diagnosis and pulmonary
+
+study interventions are Doxorubicin . breast cancer diagnosis and life expectancy
+
+study interventions are Cisplatin . brain tumors diagnosis and hematopoietic
+
+
+No Cancer samples:
+
+study interventions are Dasatinib . head and neck cancer diagnosis and concomitant medications any of the following should be considered for exclusion
+
+study interventions are Carboplatin . recurrent childhood grade iii lymphomatoid granulomatosis diagnosis and no serious medical or psychiatric illness
+
+study interventions are Carboplatin . stage iv non small cell lung cancer diagnosis and known history of allergic reactions to paclitaxel
+
+study interventions are SAR302503 (TG101348) . men who partner with woman of childbearing potential unless they agree to use effective contraception while on study drug
+
+study interventions are S-1 for 6 months . suffering from other uncontrolled diseases such as other tumors acute and chronic infection
