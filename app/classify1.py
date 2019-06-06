@@ -53,6 +53,10 @@ class Top_Class():
         self.sentiment_cls = Sentiment_Classfier()
         self.explain = None
 
+        # a = self.sentiment_data.dev_data
+        # for item in a:
+        #     print(item)
+
     def train(self):
         self.sentiment_cls.train_classifier(self.sentiment_data.trainX, self.sentiment_data.trainy)
         self.explain = shap.LinearExplainer(self.sentiment_cls.cls,
@@ -77,11 +81,7 @@ class Top_Class():
         return weight_dict
 
     def shap_force_plot(self, query):
-        print("inside class 1")
         query_X = self.tokenizer.transform([query])
-        print(query_X.shape)
-        print(self.sentiment_data.trainX.shape)
-        print("----------")
         feature_names = self.tokenizer.get_feature_names()
         shap_values = self.explain.shap_values(query_X)
 

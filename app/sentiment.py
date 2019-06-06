@@ -89,7 +89,7 @@ def read_unlabeled(tarfname, sentiment):
         
             
     unlabeled.X = sentiment.count_vect.transform(unlabeled.data)
-    print(unlabeled.X.shape)
+
     tar.close()
     return unlabeled
 
@@ -106,8 +106,6 @@ def read_tsv(tar, fname):
     return data, labels
 
 def read_tsv2(fname):
-    # member = tar.getmember(fname)
-    # print(member.name)
     tsvfile = open(fname)
     tf = csv.reader(tsvfile, delimiter='\t')
     data = []

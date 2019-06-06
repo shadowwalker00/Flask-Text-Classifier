@@ -8,6 +8,7 @@ from app.classify2 import *
 from app.wordC import *
 from eli5.lime import TextExplainer
 from sklearn.pipeline import  make_pipeline
+from bs4 import BeautifulSoup
 
 
 senti_cls = Top_Class()
@@ -123,8 +124,6 @@ def getTask2Data():
         top_k_words.append(sentiment_task2.count_vect.get_feature_names()[i])
         corr_weights.append(np.round(coefficients[i], 2))
 
-    for item in zip(top_k_words, corr_weights):
-        print(item)
 
     return json.dumps({'feature':top_k_words,
                        'value':corr_weights},ensure_ascii=False)
@@ -162,7 +161,7 @@ def predict():
     html = te.show_prediction(targets=['0'], target_names=['0', '1'])
 
     height = len(featurename)
-    print("height:", height)
+
     return jsonify({"result": res,
                     "negprob":str(round(prob[0,0]*100,2))+"%",
                     "posprob":str(round(prob[0,1]*100,2))+"%",
@@ -188,16 +187,7 @@ def predict2():
                                           featurenames)
     shapValue = list(shapValue)
     shapname = list(shapname)
-    badValue = []
-    goodValue = []
-    for item in shapValue:
-        if item >= 0:
-            badValue.append(0)
-            goodValue.append(round(item, 2))
-        else:
-            goodValue.append(0)
-            badValue.append(round(item, 2))
-    height = len(shapname)
+
 
 
     # --- lime ---
@@ -206,20 +196,56 @@ def predict2():
     prob = pipe.predict_proba([query_text])
     negprob = prob[0,0] * 100
     posprob = prob[0,1] * 100
+
     if prob[0,0] > prob[0,1]:
         res = "NEGATIVE"
     else:
         res = "POSITIVE"
     te.fit(query_text, pipe.predict_proba)
-    html = te.show_prediction(targets=['0'], target_names=['0', '1'])
+    html_neg = te.show_prediction()
+    # html_pos = te.show_prediction(targets=['1'], target_names=['0', '1'])
 
+    soup = BeautifulSoup(te.show_weights().data)
+    soup_values = []
+    soup_names = []
+    # print(te.show_weights().data)
+    for id, k in enumerate(soup.find_all('td')):
+        text = k.get_text().strip()
+        if id%2==0:
+            soup_values.append(text)
+        else:
+            soup_names.append(text)
+    soup_values_filter = []
+    soup_names_filter = []
+
+    for item1,item2 in zip(soup_values,soup_names):
+        if(item1[0]!="+" and item1[0]!="-"):
+            continue
+        soup_values_filter.append(float(item1))
+        soup_names_filter.append(item2)
+
+    badValue = []
+    goodValue = []
+    for item in soup_values_filter:
+        if item >= 0:
+            badValue.append(0)
+            goodValue.append(round(item, 2))
+        else:
+            goodValue.append(0)
+            badValue.append(round(item, 2))
+
+    height = len(soup_names_filter)
+
+    print(len(soup_values_filter))
+    print(len(soup_names_filter))
+    print(len(goodValue))
+    print(len(badValue))
     return jsonify({"result":res,
                     "negprob": str(round(negprob, 2)) + "%",
                     "posprob": str(round(posprob, 2)) + "%",
-                    "htmlData": html,
+                    "htmlDataNeg": html_neg,
                     "goodvalue": goodValue,
                     "badvalue": badValue,
-                    "featurename": shapname,
+                    "featurename": soup_names_filter,
                     "height": height
                     })
-
