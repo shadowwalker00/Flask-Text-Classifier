@@ -161,6 +161,8 @@ def predict():
     for item1, item2 in zip(soup_values, soup_names):
         if (item1[0] != "+" and item1[0] != "-"):
             continue
+        if (item2 == "<BIAS>"):
+            continue
         soup_values_filter.append(float(item1))
         soup_names_filter.append(item2)
 
@@ -175,14 +177,6 @@ def predict():
             badValue.append(round(item, 2))
 
     height = len(soup_names_filter)
-
-    print(len(soup_values_filter))
-    print(len(soup_names_filter))
-    print(len(goodValue))
-    print(len(badValue))
-    print(goodValue)
-    print(badValue)
-    print(height)
 
     height = len(soup_names_filter)
 
@@ -231,6 +225,8 @@ def predict2():
     for item1,item2 in zip(soup_values,soup_names):
         if(item1[0]!="+" and item1[0]!="-"):
             continue
+        if(item2=="<BIAS>"):
+            continue
         soup_values_filter.append(float(item1))
         soup_names_filter.append(item2)
 
@@ -250,8 +246,7 @@ def predict2():
     print(len(soup_names_filter))
     print(len(goodValue))
     print(len(badValue))
-    print(goodValue)
-    print(badValue)
+    print(soup_names_filter)
     print(height)
     return jsonify({"result":res,
                     "negprob": str(round(negprob, 2)) + "%",
