@@ -135,21 +135,6 @@ def predict():
     query_text = request.form["text"]
     res, prob = senti_cls.test_query(query_text)
 
-
-    # --- show shap display ---
-    shapValue, featurename = senti_cls.shap_force_plot(query_text)
-    shapValue = list(shapValue)
-    featurename = list(featurename)
-    badValue = []
-    goodValue = []
-    for item in shapValue:
-        if item>=0:
-            badValue.append(0)
-            goodValue.append(round(item,2))
-        else:
-            goodValue.append(0)
-            badValue.append(round(item,2))
-
     # ---lime---
     te = TextExplainer(random_state=42)
 
@@ -160,14 +145,53 @@ def predict():
 
     html = te.show_prediction(targets=['0'], target_names=['0', '1'])
 
-    height = len(featurename)
+    soup = BeautifulSoup(te.show_weights().data)
+    soup_values = []
+    soup_names = []
+
+    for id, k in enumerate(soup.find_all('td')):
+        text = k.get_text().strip()
+        if id % 2 == 0:
+            soup_values.append(text)
+        else:
+            soup_names.append(text)
+    soup_values_filter = []
+    soup_names_filter = []
+
+    for item1, item2 in zip(soup_values, soup_names):
+        if (item1[0] != "+" and item1[0] != "-"):
+            continue
+        soup_values_filter.append(float(item1))
+        soup_names_filter.append(item2)
+
+    badValue = []
+    goodValue = []
+    for item in soup_values_filter:
+        if item >= 0:
+            badValue.append(0)
+            goodValue.append(round(item, 2))
+        else:
+            goodValue.append(0)
+            badValue.append(round(item, 2))
+
+    height = len(soup_names_filter)
+
+    print(len(soup_values_filter))
+    print(len(soup_names_filter))
+    print(len(goodValue))
+    print(len(badValue))
+    print(goodValue)
+    print(badValue)
+    print(height)
+
+    height = len(soup_names_filter)
 
     return jsonify({"result": res,
                     "negprob":str(round(prob[0,0]*100,2))+"%",
                     "posprob":str(round(prob[0,1]*100,2))+"%",
                     "goodvalue":goodValue,
                     "badvalue": badValue,
-                    "featurename":featurename,
+                    "featurename":soup_names_filter,
                     "height":height,
                     "htmlData": html})
 
@@ -175,20 +199,6 @@ def predict():
 @app.route('/predict2', methods=['POST'])
 def predict2():
     query_text = request.form["text"]
-
-    # --- shap ---
-    query_X = sentiment_task2.count_vect.transform([query_text])
-    featurenames = sentiment_task2.count_vect.get_feature_names()
-
-    shapValue, shapname = shap_force_plot(cls_task2,
-                                          query_text,
-                                          query_X,
-                                          sentiment_task2.trainX,
-                                          featurenames)
-    shapValue = list(shapValue)
-    shapname = list(shapname)
-
-
 
     # --- lime ---
     te = TextExplainer(random_state=42)
@@ -240,6 +250,9 @@ def predict2():
     print(len(soup_names_filter))
     print(len(goodValue))
     print(len(badValue))
+    print(goodValue)
+    print(badValue)
+    print(height)
     return jsonify({"result":res,
                     "negprob": str(round(negprob, 2)) + "%",
                     "posprob": str(round(posprob, 2)) + "%",
