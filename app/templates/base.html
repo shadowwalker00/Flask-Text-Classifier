@@ -34,62 +34,13 @@
         <title></title>
     {% endif %}
     {% block head %}{% endblock %}
-    <script src="http://ajax.microsoft.com/ajax/jQuery/jquery-1.7.2.min.js"></script>
-    <script>
-        $(function(){
-            $(function () {
-                $(window).scroll(function(){
-                    if ($(window).scrollTop()>100){
-                        $("#back-to-top").fadeIn(1500);
-                    }
-                    else
-                    {
-                        $("#back-to-top").fadeOut(1500);
-                    }
-                });
-
-                //当点击跳转链接后，回到页面顶部位置
-                $("#back-to-top").click(function(){
-                    //$('body,html').animate({scrollTop:0},1000);
-                    if ($('html').scrollTop()) {
-                        $('html').animate({ scrollTop: 0 }, 1000);
-                        return false;
-                    }
-                    $('body').animate({ scrollTop: 0 }, 1000);
-                    return false;
-                });
-            });
-        });
-    </script>
 </head>
-<body background='../static/pic/bg-mobile-fallback.jpg' style="font-family:algerian,courier;">
-<nav class="navbar navbar-default"  role="navigation">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" style="background-color:white" href="#">CSE256 NLP</a>
-        </div>
-        <div>
-            <ul class="nav navbar-nav">
-                <li><a href="/display">Task1</a></li>
-                <li><a href="/display2">Task2</a></li>
-                <li><a href="/query">Task1 Query</a></li>
-                <li><a href="/query2">Task2 Query</a></li>
-            </ul>
-        </div>
+<body>
+{% for img in image_list %}
+    <div class="col-md-12">
+        <p>{{ img[1] }}</p>
+        <img class="center-block" src="{{ url_for('static',filename=img[2])}}" width="100%">
     </div>
-</nav>
-
-
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }} </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-{% endwith %}
-{% block content %}{% endblock %}
-
+{% endfor %}
 </body>
 </html>
